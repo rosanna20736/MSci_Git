@@ -24,6 +24,8 @@ decoherences = 15 #decoherence rate: probability of a decoherence event occuring
 fig = plt.figure()
 ax = plt.axes(xlim=(-steps, steps), ylim=(0, 0.12))
 line, = ax.plot([], [], lw=2)
+line_C, = ax.plot([], [], lw=2)
+line_CP, = ax.plot([], [], lw=2)
 # initialization function: plot the background of each frame
 def init():
     line.set_data([], [])
@@ -72,25 +74,49 @@ for i in range(2*steps+1):
     
 #THE QUANTUM WALK - WITH NOISE
 p = np.zeros((2*steps+1,decoherences+1))
+p_C = np.zeros((2*steps+1,decoherences+1))
+p_CP = np.zeros((2*steps+1,decoherences+1))
 decoherences_list = np.zeros((decoherences+1,1))
-stdevs = np.zeros((decoherences+1,1))
 for j in range(decoherences+1):
     print(j)
-    decoherence = np.cos((j)*np.pi*0.5/decoherences)
+    #decoherence = np.cos((j)*np.pi*0.5/decoherences)
+    decoherence = 1 - np.log(1+(np.e-1)*j/decoherences)
     decoherences_list[j] =  decoherence
     #set initial state of system
     system = np.zeros((4*steps+2,4*steps+2))    #empty density matrix of system: position density matrix (tensor product) coin density matrix
     system[2*steps:2*steps+2,2*steps:2*steps+2] = np.outer(np.conjugate(initial),initial)    #initial state of system (have to explicitly put conjugate into outer product)
+    system_C = np.zeros((4*steps+2,4*steps+2))
+    system_C[2*steps:2*steps+2,2*steps:2*steps+2] = np.outer(np.conjugate(initial),initial)
+    system_CP = np.zeros((4*steps+2,4*steps+2))
+    system_CP[2*steps:2*steps+2,2*steps:2*steps+2] = np.outer(np.conjugate(initial),initial)
     #The Quantum Walk
     for x in range(steps):
         system_noiseless = S*coin_flip*system*coin_flip*np.matrix.getH(S) #step of the walk where there is no noise at that step
+        system_C_noiseless = S*coin_flip*system_C*coin_flip*np.matrix.getH(S)
+        system_CP_noiseless = S*coin_flip*system_CP*coin_flip*np.matrix.getH(S)
         system = (1-decoherence)*system_noiseless   #with probability (1-decoherence), the system is not affected by noise
+        system_C = (1-decoherence)*system_C_noiseless
+        system_CP = (1-decoherence)*system_CP_noiseless
+        #Just position measurement
         for i in range(2*steps+1):
             ket_i = np.zeros((2*steps+1,1))
             ket_i[i] = 1
             M_i = np.outer(ket_i,ket_i)
             M_P = np.kron(M_i,I_C)
             system = system + decoherence*M_P*system_noiseless*np.matrix.getH(M_P) #with probability decoherence, the system's position is measured
+        #Just coin measurement
+        for i in range(2):
+            ket_i = np.zeros((2,1))
+            ket_i[i] = 1
+            M_i = np.outer(ket_i,ket_i)
+            M_C = np.kron(I_P,M_i)
+            system_C = system_C + decoherence*M_C*system_C_noiseless*np.matrix.getH(M_C) #with probability decoherence, the coin is measured
+        #Both coin and position measurement
+        for i in range(2*(2*steps+1)):
+            ket_i = np.zeros((2*(2*steps+1),1))
+            ket_i[i] = 1
+            M_CP = np.outer(ket_i,ket_i)
+            system_CP = system_CP + decoherence*M_CP*system_CP_noiseless*np.matrix.getH(M_CP)
     #Measurement
     for i in range(2*steps+1):
         ket_i = np.zeros((2*steps+1,1))
@@ -98,18 +124,15 @@ for j in range(decoherences+1):
         M_i = np.outer(ket_i,ket_i)
         M_P = np.kron(M_i,I_C)
         p[i,j]= np.trace(M_P*np.matrix.getH(M_P)*system)
-    stdevs[j] = np.std( p[0:2*steps+1:2,j])
+        p_C[i,j]= np.trace(M_P*np.matrix.getH(M_P)*system_C)
+        p_CP[i,j]= np.trace(M_P*np.matrix.getH(M_P)*system_CP)
     
-def animate(j):
-    y = p[0:2*steps+1:2,j]
-    line.set_data(steplabels, y)
-    return line,
+def animate(j): 
+    line.set_data(steplabels, p[0:2*steps+1:2,j])
+    line_C.set_data(steplabels, p_C[0:2*steps+1:2,j])
+    line_CP.set_data(steplabels, p_CP[0:2*steps+1:2,j])
+    return line, line_C, line_CP,
 
 # call the animator.  blit=True means only re-draw the parts that have changed.
 anim = animation.FuncAnimation(fig, animate, init_func=init, frames=decoherences+1, interval=80, blit=True)
-
 plt.show()
-
-#plot measurement probabilities
-plt.figure()
-plt.plot(decoherences_list,stdevs)
