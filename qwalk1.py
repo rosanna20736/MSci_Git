@@ -134,5 +134,9 @@ def animate(j):
     return line, line_C, line_CP,
 
 # call the animator.  blit=True means only re-draw the parts that have changed.
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=decoherences+1, interval=80, blit=True)
-plt.show()
+anim = animation.FuncAnimation(fig, animate, init_func=init, frames=decoherences+1, blit=True)
+
+mywriter=animation.FFMpegWriter(fps=10)
+anim.save('animation.mp4',writer=mywriter)
+
+#plt.show()
