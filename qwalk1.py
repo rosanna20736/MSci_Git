@@ -14,7 +14,7 @@ q0 = np.matrix('1;0')
 q1 = np.matrix('0;1')
 
 #variables changeable by user
-steps = 100 #number of steps of the quantum walk to take
+steps = 50 #number of steps of the quantum walk to take
 #initial = q0 #initial coin is |0> - assume inital position is |0>
 initial = 1/np.sqrt(2)*np.matrix('1;1j') #balanced initial coin
 decoherences = 15 #decoherence rate: probability of a decoherence event occuring per time step
