@@ -4,7 +4,7 @@ import numpy as np
 #import matplotlib.animation as animation
 from scipy import linalg
 
-chainlength = 3
+chainlength = 5
 JT = 1
 
 pauli_x = np.matrix('0 1;1 0')
