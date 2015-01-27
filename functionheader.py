@@ -83,12 +83,19 @@ def quantumwalk(steps=50,decotype='n',deco=0, returntype='p'):
                 M_CP = np.outer(ket_i,ket_i)
                 system = system + decoherence*M_CP*system_noiseless*np.matrix.getH(M_CP)
      #Quantum Walk
-    elif decotype == 'h':
+    elif decotype == 'H':
         for x in range(steps):
-            ranvar = random.gauss(0.5,np.sqrt(deco)*0.01)
-            H = 1/np.sqrt(2)*np.matrix([[np.sqrt(ranvar), np.sqrt(1-ranvar)], [np.sqrt(1-ranvar), -1*np.sqrt(ranvar)]])
-            coin_flip = np.kron(I_P,H)
-            system = S*coin_flip*system*coin_flip*np.matrix.getH(S) #regular quantum walk - no noise at all
+            random.seed()
+            noisy_theta = random.gauss(0.5*np.pi,np.sqrt(deco)*0.25*np.pi)
+            noisy_H = np.matrix([[np.cos(noisy_theta/2),np.sin(noisy_theta/2)],[np.cos(noisy_theta/2),-np.sin(noisy_theta/2)]])
+            noisy_coin_flip = np.kron(I_P,noisy_H)
+            system = S*coin_flip*system*noisy_coin_flip*np.matrix.getH(S)
+            #print(noisy_theta/np.pi)
+#        for x in range(steps):
+#            ranvar = random.gauss(0.5,np.sqrt(deco)*0.01)
+#            H = 1/np.sqrt(2)*np.matrix([[np.sqrt(ranvar), np.sqrt(1-ranvar)], [np.sqrt(1-ranvar), -1*np.sqrt(ranvar)]])
+#            coin_flip = np.kron(I_P,H)
+#            system = S*coin_flip*system*coin_flip*np.matrix.getH(S) #regular quantum walk - no noise at all
                  
     else:
         print('Please pick one of the options')
