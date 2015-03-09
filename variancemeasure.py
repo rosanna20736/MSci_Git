@@ -16,27 +16,27 @@ result4 = []
 decoherences_list = []
 
 #INPUT PARAMETERS
-decoherences = 5
-steps = 100
-repeats = 500
-repeats1 = 3
+decoherences =5
+steps = 10
+repeats = 1
+repeats1 = 1
 
 #Retrieve variance for coin, position and combined noise types for decoherence prob 0 to 1
 for j in range(decoherences+1):
     decoherence = 1 - np.log(1+(np.e-1)*j/decoherences)
     decoherences_list.append(decoherence)
-    result.append(quantumwalk(steps,'c', decoherence, 'v'))
-    result1.append(quantumwalk(steps,'p', decoherence, 'v'))
-    result2.append(quantumwalk(steps,'cp', decoherence, 'v'))
-    result3temp = []
-    for i in range(repeats):
-        result3temp.append(quantumwalk(steps,'H', decoherence, 'v'))
-    result3.append(np.average(result3temp))
-    result4temp = []
-    for i in range(repeats1):
-        result4temp.append(quantumwalk(steps,'m', decoherence, 'v'))
-    result4.append(np.average(result4temp))
-    
+    result.append(quantumwalk(steps,'c', decoherence, 'vb'))
+#    result1.append(quantumwalk(steps,'p', decoherence, 'vb'))
+#    result2.append(quantumwalk(steps,'cp', decoherence, 'vb'))
+#    result3temp = []
+#    for i in range(repeats):
+#        result3temp.append(quantumwalk(steps,'H', decoherence, 'vb'))
+#    result3.append(np.average(result3temp))
+#    result4temp = []
+#    for i in range(repeats1):
+#        result4temp.append(quantumwalk(steps,'m', decoherence, 'vb'))
+#    result4.append(np.average(result4temp))
+
 #plot variance
 plt.figure()
 plt.plot(decoherences_list,result,label='coin decoherence')
@@ -46,9 +46,11 @@ plt.plot(decoherences_list,result4,label='random decoherence type',ls='None',mar
 plt.plot(decoherences_list,result3,label='imperfect hadamard',ls='None',marker="o")
 
 plt.xlabel('probability of measurement event',fontsize='large')
-plt.ylabel('variance of walk',fontsize='large')
+#plt.ylabel('variance of walk',fontsize='large')
+plt.ylabel('exponent')
 plt.legend()
-plt.axis([0,1,0,np.max(result)])
+#plt.axis([0,1,0,np.max(result)])
+plt.axis([0,1,1,np.max(result)])
 plt.show
 
 #plot standard deviation

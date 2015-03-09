@@ -9,7 +9,7 @@ from scipy import linalg
 print('running')
 plt.close('all')
 #INITIAL VARIABLES
-STEPS = 50
+STEPS = 20
 POSITIONS = 2*STEPS+1
 CHAINLENGTH = 2
 results=[]
@@ -211,7 +211,6 @@ for r in range(STEPS):
 #    
 #anim = animation.FuncAnimation(fig, animate, init_func=init, frames=STEPS, interval=50, blit=True)
 #plt.show()
-    
 plt.plot(results_Q,label='fully quantum walk')
 plt.plot(results,label='J = ' + str(round(J,2)) + ', chain length = ' + str(CHAINLENGTH))
 plt.legend(loc=2)

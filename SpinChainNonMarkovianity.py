@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy import linalg
 ##################################
 #INITIAL VARIABLES
-STEPS = 25
+STEPS = 23
 POSITIONS = 2*STEPS+1
 CHAINLENGTH =5
 results=[]
@@ -189,6 +189,6 @@ for r in range(STEPS):
 
 #    SYSTEM1 = np.matrix(EXP1)*np.matrix(SYSTEM1)*np.matrix(EXP2)           
     
- 
+plt.figure()
 plt.plot(results)
 

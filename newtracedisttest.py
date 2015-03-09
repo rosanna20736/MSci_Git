@@ -5,14 +5,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
 from spinchaingenerator import U_spinchain
+import time
 ##################################
 print('running')
+plt.close('all')
 #INITIAL VARIABLES
-STEPS = 23
+STEPS = 400
 CHAINLENGTH = 5
 results=[]
-J = 0.2
-J1 =0.1
+J=0.22
+J1=0.18
 I_C = np.identity((2))
 chaintype = 0
 ##################################
@@ -44,19 +46,17 @@ if chaintype == 1:
             CHAIN2 = CHAIN2 + COMPONENT1 + COMPONENT2
     A = (J1*CHAIN1 + J*CHAIN2)
     A = 1j*A
+    EXP1 = linalg.expm2(-1*A)
+    EXP2 = linalg.expm2(A)
 if chaintype == 0:
-    A1 = U_spinchain('xy',2)
-    for l in range(CHAINLENGTH-2):
-        A1 = np.kron(A1,I_C)
-    A2 = U_spinchain('xy',CHAINLENGTH-1)
-    A2 = np.kron(I_C,A2)
-    A = 1j*A1*J1 + 1j*A2*J
+    EXP2 = U_spinchain('xy',CHAINLENGTH,J,J1)
+    EXP1 = np.matrix.getH(EXP2)
 if chaintype == 2:
     A = (np.kron(np.kron(np.kron(np.kron(pauli_x,pauli_x),I_C),I_C),I_C)*J1)+ (np.kron(np.kron(np.kron(np.kron(I_C,pauli_x),pauli_x),I_C),I_C)*J)+ (np.kron(np.kron(np.kron(np.kron(I_C,I_C),pauli_x),pauli_x),I_C)*J)+ (np.kron(np.kron(np.kron(np.kron(I_C,I_C),I_C),pauli_x),pauli_x)*J)+ (np.kron(np.kron(np.kron(np.kron(pauli_y,pauli_y),I_C),I_C),I_C)*J1)+ (np.kron(np.kron(np.kron(np.kron(I_C,pauli_y),pauli_y),I_C),I_C)*J)+ (np.kron(np.kron(np.kron(np.kron(I_C,I_C),pauli_y),pauli_y),I_C)*J)+ (np.kron(np.kron(np.kron(np.kron(I_C,I_C),I_C),pauli_y),pauli_y)*J)
     A = np.matrix(A)*1j
+    EXP1 = linalg.expm2(-1*A)
+    EXP2 = linalg.expm2(A)
 
-EXP1 = linalg.expm2(-1*A)
-EXP2 = linalg.expm2(A)
 ######################################
 INITIALCOIN = np.matrix([[1],
                          [0]])
@@ -69,6 +69,7 @@ for x in range(CHAINLENGTH-2):
     A = np.kron(A,INITIALCHAIN)
 SYSTEM = A
 ########################################
+start_time = time.time()
 #QUANTUM WALK
 ket1 = np.matrix([[1],[0]])
 ket2 = np.matrix([[0],[1]])
@@ -91,8 +92,29 @@ for r in range(STEPS):
     z = linalg.sqrtm(np.conj(x-y)*(x-y))
     results.append(0.5*np.absolute(np.trace(z)))
     
-    SYSTEM = np.matrix(EXP1)*np.matrix(SYSTEM)*np.matrix(EXP2)            
-    
- 
+    SYSTEM = np.matrix(EXP1)*np.matrix(SYSTEM)*np.matrix(EXP2)          
+print("Michael's =  %s seconds" % (time.time() - start_time))
+plt.figure()
 plt.plot(results)
+
+#SYSTEM = A
+#results = []
+#start_time = time.time()
+#ket0 = np.matrix([[1],[0]])
+#ket1 = np.matrix([[0],[1]])
+#rho_orth = np.kron(ket1,np.matrix.getH(ket1))
+#for r in range(STEPS):
+#    rho_C = np.zeros((2,2))
+#    for i in range(np.power(2,CHAINLENGTH-1)):
+#        ket_i = np.zeros((np.power(2,CHAINLENGTH-1),1))
+#        ket_i[i] = 1
+#        OPP_left = np.kron(I_C,np.matrix.getH(ket_i))
+#        OPP_right = np.kron(I_C,ket_i)
+#        rho_C = rho_C + np.matrix(OPP_left)*np.matrix(SYSTEM)*np.matrix(OPP_right)
+#    rho_diff = np.matrix(rho_C)-np.matrix(rho_orth)
+#    results.append(0.5*np.trace(linalg.sqrtm(np.matrix.getH(rho_diff)*np.matrix(rho_diff))))
+#    SYSTEM = np.matrix(EXP1)*np.matrix(SYSTEM)*np.matrix(EXP2)     
+#print("Rosanna's =  %s seconds" % (time.time() - start_time))
+#plt.figure()
+#plt.plot(results)
 
