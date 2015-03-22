@@ -10,11 +10,11 @@ import time
 print('running')
 plt.close('all')
 #INITIAL VARIABLES
-STEPS = 400
+STEPS = 500
 CHAINLENGTH = 5
 results=[]
-J=0.22
-J1=0.18
+J=0.2
+J1=0.1
 I_C = np.identity((2))
 chaintype = 0
 ##################################
@@ -58,16 +58,22 @@ if chaintype == 2:
     EXP2 = linalg.expm2(A)
 
 ######################################
-INITIALCOIN = np.matrix([[1],
+INITIALCOIN = np.matrix([[0],
+                         [1]])
+INITIALCOIN_orth = np.matrix([[1],
                          [0]])
 INITIALCOIN = np.outer(INITIALCOIN,INITIALCOIN)
-INITIALCHAIN = np.matrix([[0],
-                          [1]])
+INITIALCOIN_orth = np.outer(INITIALCOIN_orth,INITIALCOIN_orth)
+INITIALCHAIN = np.matrix([[1],
+                          [0]])
 INITIALCHAIN = np.outer(INITIALCHAIN,INITIALCHAIN)
-A = np.kron(INITIALCOIN,INITIALCHAIN)                                         
+A = np.kron(INITIALCOIN,INITIALCHAIN)
+A_orth = np.kron(INITIALCOIN_orth,INITIALCHAIN)                                       
 for x in range(CHAINLENGTH-2):
     A = np.kron(A,INITIALCHAIN)
+    A_orth = np.kron(A_orth,INITIALCHAIN)
 SYSTEM = A
+SYSTEM_orth = A_orth
 ########################################
 start_time = time.time()
 #QUANTUM WALK
@@ -97,24 +103,27 @@ print("Michael's =  %s seconds" % (time.time() - start_time))
 plt.figure()
 plt.plot(results)
 
-#SYSTEM = A
-#results = []
-#start_time = time.time()
-#ket0 = np.matrix([[1],[0]])
-#ket1 = np.matrix([[0],[1]])
-#rho_orth = np.kron(ket1,np.matrix.getH(ket1))
-#for r in range(STEPS):
-#    rho_C = np.zeros((2,2))
-#    for i in range(np.power(2,CHAINLENGTH-1)):
-#        ket_i = np.zeros((np.power(2,CHAINLENGTH-1),1))
-#        ket_i[i] = 1
-#        OPP_left = np.kron(I_C,np.matrix.getH(ket_i))
-#        OPP_right = np.kron(I_C,ket_i)
-#        rho_C = rho_C + np.matrix(OPP_left)*np.matrix(SYSTEM)*np.matrix(OPP_right)
-#    rho_diff = np.matrix(rho_C)-np.matrix(rho_orth)
-#    results.append(0.5*np.trace(linalg.sqrtm(np.matrix.getH(rho_diff)*np.matrix(rho_diff))))
-#    SYSTEM = np.matrix(EXP1)*np.matrix(SYSTEM)*np.matrix(EXP2)     
-#print("Rosanna's =  %s seconds" % (time.time() - start_time))
-#plt.figure()
-#plt.plot(results)
+SYSTEM = A
+results = []
+start_time = time.time()
+ket0 = np.matrix([[1],[0]])
+ket1 = np.matrix([[0],[1]])
+rho_orth = np.kron(ket1,np.matrix.getH(ket1))
+for r in range(STEPS):
+    rho_C = np.zeros((2,2))
+    rho_orth = np.zeros((2,2))
+    for i in range(np.power(2,CHAINLENGTH-1)):
+        ket_i = np.zeros((np.power(2,CHAINLENGTH-1),1))
+        ket_i[i] = 1
+        OPP_left = np.kron(I_C,np.matrix.getH(ket_i))
+        OPP_right = np.kron(I_C,ket_i)
+        rho_C = rho_C + np.matrix(OPP_left)*np.matrix(SYSTEM)*np.matrix(OPP_right)
+        rho_orth = rho_orth + np.matrix(OPP_left)*np.matrix(SYSTEM_orth)*np.matrix(OPP_right)
+    rho_diff = np.matrix(rho_C)-np.matrix(rho_orth)
+    results.append(0.5*np.trace(linalg.sqrtm(np.matrix.getH(rho_diff)*np.matrix(rho_diff))))
+    SYSTEM = np.matrix(EXP1)*np.matrix(SYSTEM)*np.matrix(EXP2)   
+    SYSTEM_orth = np.matrix(EXP1)*np.matrix(SYSTEM_orth)*np.matrix(EXP2)  
+print("Rosanna's =  %s seconds" % (time.time() - start_time))
+plt.figure()
+plt.plot(results)
 

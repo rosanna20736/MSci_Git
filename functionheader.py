@@ -186,6 +186,10 @@ def quantumwalk(steps=50,decotype='n',deco=0, returntype='p'):
             if returntype == 'vb':
                 p = measure(system,steps)
                 variances.append(variance(p,steps))
+    elif decotype == 'f':
+        for x in range(steps):
+            variances=(1-1/np.sqrt(2))*steps**2*(1-np.sqrt(2)/6*decoherence*steps+decoherence*(np.sqrt(2)-1))
+        return variances
     else:
         print('Please pick one of the options')
        
@@ -204,7 +208,8 @@ def quantumwalk(steps=50,decotype='n',deco=0, returntype='p'):
     elif returntype == 'v':
         return variance(p,steps)
     elif returntype == 'vb':
-        varfit = np.polyfit(np.log(np.arange(1,steps+1)),np.log(variances),1)
+        varfit = np.polyfit(np.log(np.arange(1,steps+1)),np.log(variances),1,full=False)
+        #print(varfit)
         return varfit[0]
     else:
         steplabels = range(-steps,steps+2,2)
