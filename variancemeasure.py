@@ -7,27 +7,34 @@ import numpy as np
 #Decoherence Value: 0 (Default)
 #Return Type: 'p' (plot)(Default), 's' (system), 'm' (measurement), 'v' (variance), #'a' (animation)
 
-plt.close('all')
+#plt.close('all')
 result= []
 result1 = []
 result2 = []
 result3 = []
 result4 = []
+result5 = []
 decoherences_list = []
 
 #INPUT PARAMETERS
-decoherences = 5
+decoherences = 18
 steps = 100
-repeats = 500
+repeats = 100
 repeats1 = 3
 
 #Retrieve variance for coin, position and combined noise types for decoherence prob 0 to 1
 for j in range(decoherences+1):
     decoherence = 1 - np.log(1+(np.e-1)*j/decoherences)
     decoherences_list.append(decoherence)
+<<<<<<< HEAD
     result.append(quantumwalk(steps,'c', decoherence, 'v'))
     result1.append(quantumwalk(steps,'p', decoherence, 'v'))
     result2.append(quantumwalk(steps,'cp', decoherence, 'v'))
+=======
+#    result.append(quantumwalk(steps,'c', decoherence, 'v'))
+#    result1.append(quantumwalk(steps,'p', decoherence, 'v'))
+    result2.append(quantumwalk(steps,'cp', decoherence, 'vb'))
+>>>>>>> origin/master
 #    result3temp = []
 #    for i in range(repeats):
 #        result3temp.append(quantumwalk(steps,'H', decoherence, 'v'))
@@ -36,6 +43,7 @@ for j in range(decoherences+1):
 #    for i in range(repeats1):
 #        result4temp.append(quantumwalk(steps,'m', decoherence, 'v'))
 #    result4.append(np.average(result4temp))
+<<<<<<< HEAD
     
 #plot variance
 plt.figure()
@@ -44,11 +52,26 @@ plt.plot(decoherences_list,result1,label='position decoherence')
 plt.plot(decoherences_list,result2,label='coin and position decoherence')
 #plt.plot(decoherences_list,result4,label='random decoherence type',ls='None',marker="o")
 #plt.plot(decoherences_list,result3,label='imperfect hadamard',ls='None',marker="o")
+=======
+#    result5.append(quantumwalk(steps,'f', decoherence, 'v'))
+
+#plot variance
+plt.figure(1)
+#plt.plot(decoherences_list,result,label='coin decoherence')
+#plt.plot(decoherences_list,result1,label='position decoherence')
+#plt.plot(decoherences_list,result2,label='coin and position decoherence')
+#plt.plot(decoherences_list,result4,label='random decoherence type',ls='None',marker="o")
+#plt.plot(decoherences_list,result3,label='imperfect hadamard',ls='None',marker="o")
+#plt.plot(decoherences_list,result5,label='analytical approximation')
+plt.plot(decoherences_list,result2,label=str(steps)+' steps')
+>>>>>>> origin/master
 
 plt.xlabel('probability of measurement event',fontsize='large')
-plt.ylabel('variance of walk',fontsize='large')
+#plt.ylabel('variance of walk',fontsize='large')
+plt.ylabel('exponent',fontsize='large')
 plt.legend()
-plt.axis([0,1,0,np.max(result)])
+#plt.axis([0,1,0,np.max(result5)])
+plt.axis([0,1,1,np.max(result2)])
 plt.show
 
 #plot standard deviation
