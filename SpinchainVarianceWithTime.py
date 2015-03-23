@@ -10,9 +10,9 @@ from scipy.optimize import leastsq
 print('running SpinChainVarianceWithTime.py')
 plt.close('all')
 #INITIAL VARIABLES
-STEPS = 40
+STEPS = 50
 POSITIONS = 2*STEPS+1
-CHAINLENGTH = 2
+CHAINLENGTH = 4 
 #J = 0.8
 #J1 = 0.8
 num_Js = 20

@@ -5,9 +5,9 @@ import numpy as np
 #Steps: 50 (Default)
 #Decoherence Type: 'n' (none)(Default), 'c' (coin), 'p' (position), 'cp' (coin and position), 'H' (Hadamard), 'm' (Type of measurement chosen at random)
 #Decoherence Value: 0 (Default)
-#Return Type: 'p' (plot)(Default), 's' (system), 'm' (measurement), 'v' (variance), #'a' (animation)
+#Return Type: 'p' (plot)(Default), 's' (system), 'm' (measurement), 'v' (variance), 'vb' (variance exponent) #'a' (animation)
 
-#plt.close('all')
+plt.close('all')
 result= []
 result1 = []
 result2 = []
