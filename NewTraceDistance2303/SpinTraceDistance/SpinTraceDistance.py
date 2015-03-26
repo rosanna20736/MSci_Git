@@ -9,10 +9,10 @@ from scipy import linalg
 ##################################
 #INITIAL VARIABLES
 STEPS = 100
-CHAINLENGTH = 2
+CHAINLENGTH = 3
 results=[]
 J = 0.1
-J1 = 0.1
+J1 = 0.05
 I_C = np.identity((2))
 chaintype = 1
 ##################################

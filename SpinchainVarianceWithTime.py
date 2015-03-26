@@ -10,12 +10,10 @@ from scipy.optimize import leastsq
 print('running SpinChainVarianceWithTime.py')
 plt.close('all')
 #INITIAL VARIABLES
-STEPS = 50
+STEPS = 30
 POSITIONS = 2*STEPS+1
-CHAINLENGTH = 4 
-#J = 0.8
-#J1 = 0.8
-num_Js = 20
+CHAINLENGTH = 2
+num_Js = 5
 I_P = np.identity((POSITIONS))
 I_C = np.identity((2))
 ##################################
@@ -127,7 +125,7 @@ exponents = []
 Js = []
 J1s = []
 for m in range(num_Js+1):
-    J = 5*m/num_Js
+    J = m/num_Js
     J1 = J
     Js.append(J)
     J1s.append(J1)
@@ -216,12 +214,6 @@ for m in range(num_Js+1):
     zero_crossings = np.where(np.diff(np.sign(oscillation)))[0]
     osc_time.append(2*STEPS/zero_crossings.shape[0])
     osc_std.append(np.std(oscillation))
-#    print('T = ' + str(osc_time))
-#    print('std = ' + str(osc_std))
-#    print('n = ' + str(n))
-#    print('J = ' + str(J))
-#    print('J1 = ' + str(J1))
-#    print('chainlength = ' + str(CHAINLENGTH))
     
     ###################################
     #def animate(r): 
@@ -232,14 +224,14 @@ for m in range(num_Js+1):
     #plt.show()
     ######################Plot figures########################
     colour = cm(1.*m/num_Js)
-    ax.plot(x,results,color=colour,label='J = ' + str(round(J,2)) + ', chain length = ' + str(CHAINLENGTH))
+    ax.plot(x,results,color=colour,label='J = ' + str(round(J,2)))
     ax.plot(x,var_fit,'--',color=colour)
-#ax.legend(loc=2)
+ax.legend(loc=2)
 plt.xlabel('number of steps',fontsize='large')
 plt.ylabel('variance of walk',fontsize='large')
 plt.title('chain length = '+ str(CHAINLENGTH))
 plt.show
-plt.savefig('./figures/spin_chain_with_time/'+str(STEPS)+'step_'+str(CHAINLENGTH)+'chain_variances.png', dpi=300)
+plt.savefig('./figures/spin_chain_with_time/'+str(STEPS)+'step_'+str(CHAINLENGTH)+'chain_variances_fewer.png', dpi=300)
 
 f, axarr = plt.subplots(3, sharex=True)
 axarr[0].plot(Js,osc_time,'o')
@@ -253,4 +245,4 @@ axarr[1].set_ylabel('standard deviation',fontsize='large')
 axarr[2].plot(Js,exponents,'o')
 axarr[2].set_ylabel('exponent',fontsize='large')
 plt.show
-plt.savefig('./figures/spin_chain_with_time/'+str(STEPS)+'step_'+str(CHAINLENGTH)+'chain_qualities.png', dpi=300)
+#plt.savefig('./figures/spin_chain_with_time/'+str(STEPS)+'step_'+str(CHAINLENGTH)+'chain_qualities.png', dpi=300)

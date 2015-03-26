@@ -10,7 +10,7 @@ import time
 #INITIAL VARIABLES
 STEPS = 100
 POSITIONS = 2*STEPS+1
-CHAINLENGTH = 4
+CHAINLENGTH = 2
 results=[]
 times = []
 J = 0.1
@@ -195,8 +195,8 @@ y = range(STEPS)
 
 plt.figure(num=1, figsize=(10, 8))
 #plt.title('Plot 1', size=14)
-plt.xlabel('Position', **font)
-plt.ylabel('Probability of Measurement', **font)
+plt.xlabel('steps', **font)
+plt.ylabel('Trace Distance', **font)
 #for i in range(decoherences+1):
 #    plt.plot(y, x[i], color=next(colors), linestyle=next(linecycle), label=np.around(decoherences_list[i],2))
 #    plt.plot(y, x[i], color=next(colors), linestyle="-", label=np.around(decoherences_list[i],2))

@@ -18,7 +18,7 @@ decoherences_list = []
 
 #INPUT PARAMETERS
 decoherences = 18
-steps = 50
+steps = 100
 repeats = 100
 repeats1 = 5
 
@@ -29,10 +29,10 @@ for j in range(decoherences+1):
     result.append(quantumwalk(steps,'c', decoherence, 'v'))
     result1.append(quantumwalk(steps,'p', decoherence, 'v'))
     result2.append(quantumwalk(steps,'cp', decoherence, 'v'))
-#    result3temp = []
-#    for i in range(repeats):
-#        result3temp.append(quantumwalk(steps,'H', decoherence, 'v'))
-#    result3.append(np.average(result3temp))
+    result3temp = []
+    for i in range(repeats):
+        result3temp.append(quantumwalk(steps,'H', decoherence, 'v'))
+    result3.append(np.average(result3temp))
     result4temp = []
     for i in range(repeats1):
         result4temp.append(quantumwalk(steps,'m', decoherence, 'v'))
@@ -46,8 +46,7 @@ plt.plot(decoherences_list,result1,label='position decoherence')
 plt.plot(decoherences_list,result2,label='coin and position decoherence')
 plt.plot(decoherences_list,result4,label='random decoherence type',ls='None',marker="o")
 plt.plot(decoherences_list,result3,label='imperfect hadamard',ls='None',marker="o")
-plt.plot(decoherences_list,result5,label='analytical approximation')
-#plt.plot(decoherences_list,result2,label=str(steps)+' steps')
+#plt.plot(decoherences_list,result5,label='analytical approximation')
 
 
 plt.xlabel('probability of measurement event',fontsize='large')
